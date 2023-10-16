@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    
+    <!-- Bootstrap -->
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Javascript -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+  <!-- Font Awesome -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- CSS -->
+
+  <link rel="stylesheet" href="./weather.css">
+
+  <!-- Google Fonts -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@1,700&family=Quicksand&display=swap" rel="stylesheet">
+
+</head>
+<body style="font-family: 'Quicksand', sans-serif;">
+
+    <video playsinline autoplay muted loop>
+        <source src="./Gallery/pexels_videos_1851190 (2160p).mp4" type="video/mp4">      
+      </video>
+
+      <div class="container">
+        <h1 class="text-center mt-4" style="color: rgb(232, 227, 220); font:bolder;">WEATHER DATA</h1>
+      <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-6 mx-auto">
+              <input class="form-control text-center mt-5 p-3 rounded-pill" id="pl" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" type="text" placeholder="Enter a City Name eg: Kochi">                
+              <div id="bt">
+                <button id="searchBtn" type="button" class="btn btn-dark mt-2 w-100 rounded-pill" onclick="accessData()"><i class="fa-solid fa-magnifying-glass-location"></i> Search</button> 
+              </div>
+          </div>
+          <div class="col-md-3"></div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <div id="result" class="mt-5">
+            <p class="text-center text-light" id="found"></p>
+
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+
+      </div>
+    
+</body>
+
+<script>
+
+  function resetInput() {
+    document.getElementById('pl').value = '';
+    document.getElementById('pl').focus();
+  }
+
+  function accessData() {
+      var place = document.getElementById('pl').value;
+
+      if (place) {
+          fetch(`https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=b25e712a36bec91797a9d866a245dac1`)
+              .then(response => response.json())
+              .then(data => {
+                  if (data.cod === 200) {
+                      displayTemp(data);
+                      resetInput(); // Call the resetInput function
+                  } else {
+                      found.innerHTML="City not Found"
+                  }
+              })
+              .catch(error => console.log(error));
+      } else {
+          found.innerHTML="Enter a City Name"
+      }
+  }
+
+  function displayTemp(cityArray) {
+    temp1=parseInt(cityArray.main.temp- 273.15)
+      date3 = new Date().toLocaleString();
+      weather=cityArray.weather[0].main
+      speed=cityArray.wind.speed
+      pre=cityArray.main.humidity
+      county=cityArray.sys.country
+      feel=parseInt(cityArray.main.feels_like-273.15)
+      dateObj = new Date(cityArray.sys.sunrise * 1000);
+
+      utcString = dateObj.toLocaleString()
+  time = utcString.slice(-11, -4);
+  console.log(Math.floor(new Date().getTime()/1000.0) );
+  city=cityArray.name
+  result.innerHTML=
+
+  ` <div class="card mx-auto opacity-75 p-5" style="width: 100%;">
+  <div class="card-body">
+    <h5 class="card-title fs-1"><i class="fa-solid fa-location-crosshairs fa-sm"></i>  ${city}</h5>
+    <p class="card-text fs-5">${weather} ${temp1}°C </p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item fs-5">${date3}</li>
+    <li class="list-group-item fs-5"><i class="fa-solid fa-location-dot fa-sm " style="color:black;"></i> Country : ( ${county} )</li>
+    <li class="list-group-item fs-5"><i class="fa-solid fa-wind fa-sm mt-4" style="color: black;"></i>  Wind: ${speed}km/h</li>
+    <li class="list-group-item fs-5"><i class="fa-solid fa-droplet fa-sm mt-4" style="color: black;"></i>  Humidity: ${pre}%</li>
+    <li class="list-group-item fs-5"><i class="fa-solid fa-temperature-three-quarters fa-sm mt-4" style="color: black;"></i>  Feels Like : ${feel}°C</li>
+    <li class="list-group-item fs-5"><i class="fa-solid fa-cloud-sun fa-sm mt-4" style="color: black;"></i>Sunrise: ${time}</li>
+
+  </ul>
+
+</div>`
+    
+ }
+</script>
+
+</html>
